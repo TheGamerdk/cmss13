@@ -60,6 +60,7 @@
 
 #define EFFECT_FLAG_LIFE (1<<0)
 #define EFFECT_FLAG_DEFAULT (1<<1)
+#define EFFECT_FLAG_FORCE_KNOCKDOWN (1<<2)
 //Examples for future usage!
 //#define EFFECT_FLAG_EXPLOSIVE
 //#define EFFECT_FLAG_XENOMORPH
@@ -68,7 +69,7 @@
 /mob/proc/apply_effect()
 	return FALSE
 
-/mob/living/apply_effect(var/effect = 0,var/effect_type = STUN, var/effect_flags = EFFECT_FLAG_DEFAULT)
+/mob/living/apply_effect(var/effect = 0,var/effect_type = STUN, var/effect_flags = EFFECT_FLAG_DEFAULT, var/force = FALSE)
 
 	if(SEND_SIGNAL(src, COMSIG_LIVING_APPLY_EFFECT, effect, effect_type, effect_flags) & COMPONENT_CANCEL_EFFECT)
 		return
@@ -80,7 +81,7 @@
 		if(STUN)
 			Stun(effect)
 		if(WEAKEN)
-			KnockDown(effect)
+			KnockDown(effect, (effect_flag & EFFECT_FLAG_FORCE_KNOCKDOWN) = TRUE : FALSE)
 		if(PARALYZE)
 			KnockOut(effect)
 		if(DAZE)
