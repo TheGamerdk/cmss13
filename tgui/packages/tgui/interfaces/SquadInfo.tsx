@@ -195,9 +195,9 @@ const FireTeamMember = (
   context
 ) => {
   const { data, act } = useBackend<SquadProps>(context);
-  const assignFT1 = { target_ft: 'FT1', target_marine: props.member.name };
-  const assignFT2 = { target_ft: 'FT2', target_marine: props.member.name };
-  const assignFT3 = { target_ft: 'FT3', target_marine: props.member.name };
+  const assignFT1 = { target_ft: 'FT1', target_marine: props.member.refer };
+  const assignFT2 = { target_ft: 'FT2', target_marine: props.member.refer };
+  const assignFT3 = { target_ft: 'FT3', target_marine: props.member.refer };
 
   const promote = () => {
     const teamlead = props.fireteam?.tl;
@@ -211,14 +211,14 @@ const FireTeamMember = (
     }
     act('promote_ftl', {
       target_ft: props.team,
-      target_marine: props.member.name,
+      target_marine: props.member.refer,
     });
   };
 
   const unassign = () =>
     act('unassign_ft', {
       target_ft: props.team,
-      target_marine: props.member.name,
+      target_marine: props.member.refer,
     });
   return (
     <>

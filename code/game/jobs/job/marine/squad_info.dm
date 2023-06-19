@@ -42,6 +42,12 @@
 			return marine
 	return null
 
+/datum/squad/proc/get_marine_from_ref(ref)
+	var/mob/living/carbon/human/H = locate(ref) in marines_list
+	if(H && istype(H))
+		return H
+	return null
+
 /datum/squad/ui_assets(mob/user)
 	return list(get_asset_datum(/datum/asset/spritesheet/ranks))
 
@@ -60,7 +66,7 @@
 			if (islead != "sl")
 				return
 
-			var/mob/living/carbon/human/target = get_marine_from_name(target_marine)
+			var/mob/living/carbon/human/target = get_marine_from_ref(target_marine)
 			if(!target)
 				return
 
@@ -74,7 +80,7 @@
 			if (islead != "sl")
 				return
 
-			var/mob/living/carbon/human/target = get_marine_from_name(target_marine)
+			var/mob/living/carbon/human/target = get_marine_from_ref(target_marine)
 			if(!target)
 				return
 			unassign_fireteam(target, TRUE)
@@ -98,7 +104,7 @@
 			if (islead != "sl")
 				return
 
-			var/mob/living/carbon/human/target = get_marine_from_name(target_marine)
+			var/mob/living/carbon/human/target = get_marine_from_ref(target_marine)
 			if(!target)
 				return
 			assign_ft_leader(target_team, target, TRUE)
