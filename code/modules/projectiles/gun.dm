@@ -806,6 +806,7 @@ As sniper rifles have both and weapon mods can change them as well. ..() deals w
 	set waitfor = 0
 	if(cocked_sound)
 		addtimer(CALLBACK(src, PROC_REF(cock_sound), user), 0.5 SECONDS)
+	SEND_SIGNAL(src, COMSIG_GUN_INTERRUPT_FIRE)
 
 /obj/item/weapon/gun/proc/cock_sound(mob/user)
 	if(user && loc)
