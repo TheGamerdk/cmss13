@@ -288,6 +288,8 @@
 		deployed_turret.linked_cam.network = list(CAMERA_NET_ALAMO)
 	else if (linked_shuttle.id == DROPSHIP_NORMANDY)
 		deployed_turret.linked_cam.network = list(CAMERA_NET_NORMANDY)
+	else if (linked_shuttle.id == DROPSHIP_SAIPAN)
+		deployed_turret.linked_cam.network = list(CAMERA_NET_SAIPAN)
 
 
 /obj/structure/dropship_equipment/sentry_holder/proc/undeploy_sentry()
@@ -685,7 +687,7 @@
 
 	msg_admin_niche("[key_name(user)] is direct-firing [SA] onto [selected_target] at ([target_turf.x],[target_turf.y],[target_turf.z]) [ADMIN_JMP(target_turf)]")
 	if(ammo_travelling_time)
-		var/total_seconds = max(round(ammo_travelling_time/10),1)
+		var/total_seconds = max(floor(ammo_travelling_time/10),1)
 		for(var/i = 0 to total_seconds)
 			sleep(10)
 			if(!selected_target || !selected_target.loc)//if laser disappeared before we reached the target,
@@ -721,9 +723,7 @@
 
 	ammo_accuracy_range /= 2 //buff for basically pointblanking the ground
 
-	var/list/possible_turfs = list()
-	for(var/turf/TU in range(ammo_accuracy_range, target_turf))
-		possible_turfs += TU
+	var/list/possible_turfs = RANGE_TURFS(ammo_accuracy_range, target_turf)
 	var/turf/impact = pick(possible_turfs)
 	sleep(3)
 	SA.source_mob = user
@@ -1216,7 +1216,7 @@
 
 	var/list/possible_fultons = get_targets()
 
-	if(!possible_fultons.len)
+	if(!length(possible_fultons))
 		to_chat(user, SPAN_WARNING("No active balloons detected."))
 		return
 
@@ -1328,9 +1328,7 @@
 
 	ammo_accuracy_range /= 2 //buff for basically pointblanking the ground
 
-	var/list/possible_turfs = list()
-	for(var/turf/TU in range(ammo_accuracy_range, target_turf))
-		possible_turfs += TU
+	var/list/possible_turfs = RANGE_TURFS(ammo_accuracy_range, target_turf)
 	var/turf/impact = pick(possible_turfs)
 	sleep(3)
 	SA.source_mob = user

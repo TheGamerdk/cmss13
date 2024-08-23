@@ -609,7 +609,7 @@
 
 		// We're gonna skip all the entries above the upper x, or maxx if cropMap is set
 		var/x_target = line_len - key_len + 1
-		var/x_step_count = ROUND_UP(x_target / key_len)
+		var/x_step_count = ceil(x_target / key_len)
 		var/final_x = relative_x + (x_step_count - 1)
 		var/x_delta_with = x_upper
 		if(crop_map)
@@ -795,8 +795,8 @@ GLOBAL_LIST_EMPTY(map_model_default)
 		// We can skip calling this proc every time we see XXX
 		if(!set_space \
 			&& no_changeturf \
-			&& members_attributes.len == 2 \
-			&& members.len == 2 \
+			&& length(members_attributes) == 2 \
+			&& length(members) == 2 \
 			&& members_attributes[1] == default_list \
 			&& members_attributes[2] == default_list \
 			&& members[2] == world.area \
@@ -878,8 +878,8 @@ GLOBAL_LIST_EMPTY(map_model_default)
 		// We can skip calling this proc every time we see XXX
 		if(!set_space \
 			&& no_changeturf \
-			&& members.len == 2 \
-			&& members_attributes.len == 2 \
+			&& length(members) == 2 \
+			&& length(members_attributes) == 2 \
 			&& length(members_attributes[1]) == 0 \
 			&& length(members_attributes[2]) == 0 \
 			&& (world.area in members) \
@@ -911,7 +911,7 @@ GLOBAL_LIST_EMPTY(map_model_default)
 
 	//The next part of the code assumes there's ALWAYS an /area AND a /turf on a given tile
 	//first instance the /area and remove it from the members list
-	index = members.len
+	index = length(members)
 	var/area/old_area
 	if(members[index] != /area/template_noop)
 		if(members_attributes[index] != default_list)
