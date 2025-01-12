@@ -174,5 +174,5 @@
 	network = list(CAMERA_NET_SIMULATION)
 	invuln = TRUE
 	view_range = 14
-	use_power = USE_POWER_NONE
+	use_power = FALSE
 	invisibility = INVISIBILITY_MAXIMUM
