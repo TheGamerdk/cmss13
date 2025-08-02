@@ -4,6 +4,9 @@
 	if(..())
 		return TRUE
 
+	if(HAS_TRAIT(attacking_mob, TRAIT_HAULED))
+		return
+
 	SEND_SIGNAL(attacking_mob, COMSIG_LIVING_ATTACKHAND_HUMAN, src)
 
 	if((attacking_mob != src) && check_shields(0, attacking_mob.name))
@@ -27,6 +30,10 @@
 			if(!(stat == UNCONSCIOUS && getOxyLoss() > 0) && !(stat == DEAD))
 				help_shake_act(attacking_mob)
 				return 1
+
+			if(species.flags & IS_SYNTHETIC)
+				to_chat(attacking_mob, SPAN_DANGER("Your hands compress the metal chest uselessly... "))
+				return 0
 
 			if(cpr_attempt_timer >= world.time)
 				to_chat(attacking_mob, SPAN_NOTICE("<B>CPR is already being performed on [src]!</B>"))
@@ -139,18 +146,17 @@
 						chance = !hand ? 40 : 20
 
 					if (prob(chance))
-						visible_message(SPAN_DANGER("[attacking_mob] accidentally makes [src]'s [held_weapon.name] go off during the struggle!"), SPAN_DANGER("You accidentally make [src]'s [held_weapon.name] go off during the struggle!"), null, 5)
+						visible_message(SPAN_DANGER("[attacking_mob] accidentally discharges [src]'s [held_weapon.name] during the struggle!"), SPAN_DANGER("[attacking_mob] accidentally discharge your [held_weapon.name] during the struggle!"), null, 5)
 						var/list/turfs = list()
-						for(var/turf/T in view())
-							turfs += T
+						for(var/turf/turfs_to_discharge in view())
+							turfs += turfs_to_discharge
 						var/turf/target = pick(turfs)
 						count_niche_stat(STATISTICS_NICHE_DISCHARGE)
+						held_weapon.Fire(target, src)
 
-						attack_log += "\[[time_stamp()]\] <b>[key_name(src)]</b> accidentally fired <b>[held_weapon.name]</b> in [get_area(src)] triggered by <b>[key_name(attacking_mob)]</b>."
+						attack_log += "\[[time_stamp()]\] <b>[key_name(src)]</b> accidentally discharged <b>[held_weapon.name]</b> in [get_area(src)] triggered by <b>[key_name(attacking_mob)]</b>."
 						attacking_mob.attack_log += "\[[time_stamp()]\] <b>[key_name(src)]</b> accidentally fired <b>[held_weapon.name]</b> in [get_area(src)] triggered by <b>[key_name(attacking_mob)]</b>."
-						msg_admin_attack("[key_name(src)] accidentally fired <b>[held_weapon.name]</b> in [get_area(attacking_mob)] ([attacking_mob.loc.x],[attacking_mob.loc.y],[attacking_mob.loc.z]) triggered by <b>[key_name(attacking_mob)]</b>.", attacking_mob.loc.x, attacking_mob.loc.y, attacking_mob.loc.z)
-
-						return held_weapon.afterattack(target,src)
+						msg_admin_attack("[key_name(src)] accidentally discharged <b>[held_weapon.name]</b> in [get_area(src)] ([src.loc.x],[src.loc.y],[src.loc.z]) triggered by <b>[key_name(attacking_mob)]</b>.", src.loc.x, src.loc.y, src.loc.z)
 
 			var/disarm_chance = rand(1, 100)
 			var/attacker_skill_level = attacking_mob.skills ? attacking_mob.skills.get_skill_level(SKILL_CQC) : SKILL_CQC_MAX // No skills, so assume max

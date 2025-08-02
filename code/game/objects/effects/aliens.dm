@@ -104,6 +104,10 @@
 				W.acid_spray_act()
 				continue
 
+		if(istype(atm, /obj/item/explosive/mine/sharp))
+			var/obj/item/explosive/mine/sharp/sharp_mine = atm
+			sharp_mine.prime()
+
 		// Humans?
 		if(isliving(atm)) //For extinguishing mobs on fire
 			var/mob/living/M = atm
@@ -207,6 +211,7 @@
 		var/mob/living/carbon/human/hooman = carbone
 
 		var/damage = damage_amount
+		var/sizzle_sound = pick('sound/effects/sizzle1.ogg', 'sound/effects/sizzle2.ogg')
 
 		var/buffed_splash = FALSE
 		var/datum/effects/acid/acid_effect = locate() in hooman.effects_list
@@ -227,6 +232,7 @@
 		if (buffed_splash)
 			hooman.KnockDown(stun_duration)
 			to_chat(hooman, SPAN_HIGHDANGER("The acid coating on you starts bubbling and sizzling wildly!"))
+			playsound(hooman, sizzle_sound, 75, 1)
 		hooman.last_damage_data = cause_data
 		hooman.apply_armoured_damage(damage * 0.25, ARMOR_BIO, BURN, "l_foot", 20)
 		hooman.apply_armoured_damage(damage * 0.25, ARMOR_BIO, BURN, "r_foot", 20)
@@ -408,31 +414,39 @@
 			visible_message(SPAN_XENOWARNING("\The [acid_t] begins to crumble under the acid!"))
 
 /obj/effect/xenomorph/acid/proc/finish_melting()
-	visible_message(SPAN_XENODANGER("[acid_t] collapses under its own weight into a puddle of goop and undigested debris!"))
 	playsound(src, "acid_hit", 25, TRUE)
 
 	if(istype(acid_t, /turf))
 		if(istype(acid_t, /turf/closed/wall))
 			var/turf/closed/wall/wall = acid_t
 			new /obj/effect/acid_hole(wall)
+			visible_message(SPAN_XENODANGER("[acid_t] audibly cracks under the bubbling acid and begins to fragment!"))
 		else
 			var/turf/turf = acid_t
 			turf.ScrapeAway()
+			visible_message(SPAN_XENODANGER("[acid_t] audibly cracks under the bubbling acid and begins to fragment!"))
 
 	else if (istype(acid_t, /obj/structure/girder))
 		var/obj/structure/girder/girder = acid_t
 		girder.dismantle()
+		visible_message(SPAN_XENODANGER("[acid_t] audibly cracks under the bubbling acid and begins to fragment!"))
 
 	else if(istype(acid_t, /obj/structure/window/framed))
 		var/obj/structure/window/framed/window = acid_t
 		window.deconstruct(disassembled = FALSE)
+		visible_message(SPAN_XENODANGER("[acid_t] collapses under its own weight into a puddle of goop and undigested debris!"))
 
 	else if(istype(acid_t, /obj/structure/barricade))
 		pass() // Don't delete it, just damaj
 
+	else if(istype(acid_t, /obj/item/weapon/gun))
+		var/obj/item/weapon/gun/acid_gun = acid_t
+		acid_gun.acid_gun_durability()
+
 	else
 		for(var/mob/mob in acid_t)
 			mob.forceMove(loc)
+		visible_message(SPAN_XENODANGER("[acid_t] collapses under its own weight into a puddle of goop and undigested debris!"))
 		qdel(acid_t)
 	qdel(src)
 

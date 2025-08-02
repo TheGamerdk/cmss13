@@ -324,7 +324,7 @@ Master controller and performance related.
 		sync_validate = TRUE
 		var/datum/config_entry/number/ticklag/TL = config.entries_by_type[/datum/config_entry/number/ticklag]
 		if(!TL.sync_validate)
-			TL.ValidateAndSet(10 / config_entry_value)
+			TL.ValidateAndSet("[10 / config_entry_value]")
 		sync_validate = FALSE
 
 /datum/config_entry/number/ticklag
@@ -343,7 +343,7 @@ Master controller and performance related.
 		sync_validate = TRUE
 		var/datum/config_entry/number/fps/FPS = config.entries_by_type[/datum/config_entry/number/fps]
 		if(!FPS.sync_validate)
-			FPS.ValidateAndSet(10 / config_entry_value)
+			FPS.ValidateAndSet("[10 / config_entry_value]")
 		sync_validate = FALSE
 
 /datum/config_entry/number/tick_limit_mc_init //SSinitialization throttling
@@ -680,3 +680,6 @@ This maintains a list of ip addresses that are able to bypass topic filtering.
 /datum/config_entry/string/repo_name
 
 /datum/config_entry/string/org
+
+/datum/config_entry/string/twofactor_admins_url
+	protection = CONFIG_ENTRY_LOCKED | CONFIG_ENTRY_HIDDEN
